@@ -11,7 +11,7 @@ let stats_of_lru_stats lru_stats = {
 
 let respond lru sock msg =
   let response = 
-    match Kache_types.of_string msg with
+    match Kache_types.t_of_string msg with
       | `Put (k, v) -> 
 	Lru.put lru k v;
 	`Ok
@@ -38,9 +38,12 @@ let respond lru sock msg =
       | `GetStats ->
 	`Stats (stats_of_lru_stats (Lru.stats lru))
 
+      | `Ping -> 
+        `Ok
+
       | _ -> `Bad
   in
-  let response_s = Kache_types.to_string response in
+  let response_s = Kache_types.string_of_t 1024 response in
   Message.send sock (Message.frame response_s)
   
 let int_of_si_bytes si_bytes =

@@ -1,0 +1,27 @@
+type stats = {
+  num_hits : int;
+  num_misses : int;
+  num_entries : int;
+  max_size : int;
+  size : int;
+}
+
+type t = [
+| Ping
+| Put of (string * string)
+| Get of string
+| Mem of string
+| Remove of string
+| Clear
+| Value of string
+| NotFound
+| Found
+| Bool of bool
+| Ok
+| Bad
+| GetEntries
+| Entries of (string * string) list
+| GetStats
+| Stats of stats
+]
+

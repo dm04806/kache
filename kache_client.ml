@@ -11,13 +11,13 @@ let connect ~port ~host =
   lwt sock = Client.connect host port in
   let send_recv = Message.mk_send_recv sock in
   let transcode request =
-    let request_s = Message.frame (Kache_types.to_string request) in
+    let request_s = Message.frame (Kache_types.string_of_t 1024 request) in
     lwt response_s_opt = send_recv request_s in
 
     let response = 
       match response_s_opt with
 	| Some response_s ->
-	  Some (Kache_types.of_string response_s)
+	  Some (Kache_types.t_of_string response_s)
 	| None -> 
 	  None
     in

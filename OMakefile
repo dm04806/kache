@@ -1,5 +1,5 @@
 USE_OCAMLFIND = true
-OCAMLPACKS[] = lwt.unix lwt lwt.syntax teno pcre
+OCAMLPACKS[] = lwt.unix lwt lwt.syntax teno pcre atdgen
 
 NATIVE_ENABLED = true
 BYTE_ENABLED = true
@@ -7,8 +7,17 @@ BYTE_ENABLED = true
 OCAMLFINDFLAGS += -syntax camlp4o
 OCAMLFLAGS  += -dtypes 
 
-C_FILES = kache_client kache_types 
+C_FILES = kache_client kache_types js_kache_types
 S_FILES = kache_server kache_types lru dList
+
+# protocol users biniou serialization
+kache_types.ml kache_types.mli:  kache_types.atd
+	atdgen -biniou kache_types.atd 
+
+# .. however, for pretty-printing, use Json:
+js_kache_types.ml js_kache_types.mli:  kache_types.atd 
+	atdgen -open Kache_types -ntd -std-json -o js_kache_types kache_types.atd
+
 
 OCAML_LIBS = kache
 LIB = kache
