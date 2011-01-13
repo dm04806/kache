@@ -1,5 +1,5 @@
 USE_OCAMLFIND = true
-OCAMLPACKS[] = lwt.unix lwt lwt.syntax teno pcre atdgen
+OCAMLPACKS[] = lwt.unix lwt lwt.syntax teno atdgen
 
 NATIVE_ENABLED = true
 BYTE_ENABLED = true
@@ -10,7 +10,7 @@ OCAMLFLAGS  += -dtypes
 C_FILES = kache_client kache_types js_kache_types
 S_FILES = kache_server kache_types lru dList
 
-# protocol users biniou serialization
+# protocol user biniou serialization
 kache_types.ml kache_types.mli:  kache_types.atd
 	atdgen -biniou kache_types.atd 
 
