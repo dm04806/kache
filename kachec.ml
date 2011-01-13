@@ -3,22 +3,21 @@
 open Lwt
 open Kache_client
 
+let sprintf = Printf.sprintf
+
 let _ = 
-  let cmd = ref "" in
   let port = ref 9009 in
   let host = ref "localhost" in
+  let cmd = ref "[Ping]" in
 
-  (try
-     Getopt.parse_cmdline [
-       'p', "port", None, Some (fun s -> port := int_of_string s);
-       'h', "host", None, Some (fun s -> host := s);
-       'c', "cmd", None, Some (fun s -> cmd := s);
-     ] (fun _ -> ())
-   with Getopt.Error err ->
-     print_endline err;
-     exit 1
-  );
+  let usage = sprintf "usage: %s [-p <port>] [-h <host>] <cmd> \n
+       where default command is %S" Sys.argv.(0) !cmd in
 
+  Arg.parse [
+    "-p", Arg.Int (fun i -> port := i), sprintf "  port (default %d)" !port;
+    "-h", Arg.String (fun s -> host := s), sprintf "  host (default %S)" !host;
+  ] (fun s -> cmd := s) usage;
+    
   let request = 
     match Pcre.split !cmd with
       | [ "put"; key; value ] -> `Put (key, value)

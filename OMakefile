@@ -1,5 +1,5 @@
 USE_OCAMLFIND = true
-OCAMLPACKS[] = lwt.unix lwt lwt.syntax teno getopt pcre
+OCAMLPACKS[] = lwt.unix lwt lwt.syntax teno pcre
 
 NATIVE_ENABLED = true
 BYTE_ENABLED = true

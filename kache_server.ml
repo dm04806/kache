@@ -57,23 +57,21 @@ let int_of_si_bytes si_bytes =
   in
   int_of_float (f *. multiplier)
 
+let sprintf = Printf.sprintf 
+
 let _ =
-  let usage = Printf.sprintf "usage: %s [-p <port-num>]" Sys.argv.(0) in
-  let port_s = ref "9009" in
+  let usage = sprintf "usage: %s [-p <port>] [-s <max-size>]" Sys.argv.(0) in
+  let port= ref 9009 in
   let max_size_s = ref "10M" in
 
-  (try
-     Getopt.parse_cmdline [
-       'p', "port",     None, Some (fun s -> port_s := s);
-       's', "max-size", None, Some (fun s -> max_size_s := s)
-     ] (fun _ -> ())
-   with Getopt.Error err ->
-     print_endline err;
-     print_endline usage;
-     exit 1
-  );
+  Arg.parse [
+    "-p", Arg.Int (fun i -> port := i), 
+    sprintf "  port (default %d)" !port;
 
-  let port = int_of_string !port_s in
+    "-s", Arg.String (fun s -> max_size_s := s), 
+    sprintf "  max size (default %s)" !max_size_s
+  ] (fun _ -> ()) usage;
+
   let max_size = int_of_si_bytes !max_size_s in
 
   (* igore SIGPIPE's *)
@@ -84,6 +82,6 @@ let _ =
   let lru = Lru.create max_size (fun (k,v) -> (len k) + (len v)) in
 
   (* create and run the server *)
-  let srv = Server.server port (respond lru) in
+  let srv = Server.server !port (respond lru) in
   Lwt_unix.run srv
       

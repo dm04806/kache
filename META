@@ -1,4 +1,4 @@
-description = "client library to communicate with the cache server; a command-line client"
+description = "mem-cache client and server"
 version = "1.0"
 requires = "teno"
 archive(byte) = "cache.cma"
