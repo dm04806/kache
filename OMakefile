@@ -1,0 +1,24 @@
+USE_OCAMLFIND = true
+OCAMLPACKS[] = lwt.unix lwt lwt.syntax teno getopt pcre
+
+NATIVE_ENABLED = true
+BYTE_ENABLED = true
+
+OCAMLFINDFLAGS += -syntax camlp4o
+OCAMLFLAGS  += -dtypes 
+
+C_FILES = kache_client kache_types 
+S_FILES = kache_server kache_types lru dList
+
+OCAML_LIBS = kache
+LIB = kache
+
+.DEFAULT: \
+  $(OCamlLibrary $(LIB), $(C_FILES) ) \
+  $(OCamlProgram kachec, kachec ) \
+  $(OCamlProgram kache_server, $(S_FILES) )
+
+.PHONY:  clean
+
+clean:
+   rm -f $(filter-proper-targets $(ls R, .)) *.s *.annot
