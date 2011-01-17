@@ -1,5 +1,5 @@
 description = "mem-cache client and server"
 version = "1.0"
 requires = "teno atdgen"
-archive(byte) = "cache.cma"
-archive(native) = "cache.cmxa"
+archive(byte) = "kache.cma"
+archive(native) = "kache.cmxa"
