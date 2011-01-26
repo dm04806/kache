@@ -78,7 +78,7 @@ let respond lru sock msg =
 
       | _ -> `Bad
   in
-  let response_s = Kache_types.string_of_t 1024 response in
+  let response_s = Kache_types.string_of_t response in
   Message.send sock (Message.frame response_s)
   
 let int_of_si_bytes si_bytes =
