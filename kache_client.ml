@@ -47,7 +47,7 @@ let connect ~port ~host =
   let send_recv = Message.mk_send_recv sock in
   let transcode request =
     let request_s = Message.frame (Kache_types.string_of_t request) in
-    lwt response_s_opt = send_recv request_s in
+    lwt response_s_opt, _, _ = send_recv request_s in
 
     let response = 
       match response_s_opt with
