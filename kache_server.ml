@@ -44,39 +44,44 @@ let stats_of_lru_stats lru_stats = {
   max_size = lru_stats.Lru.s_max_size
 }
 
-let respond lru sock msg =
+let respond lru sock msg_s =
   let response = 
-    match Kache_types.t_of_string msg with
-      | `Put (k, v) -> 
-	Lru.put lru k v;
-	`Ok
+    try
+      let msg = Kache_types.t_of_string msg_s  in
+      match msg with
+        | `Put (k, v) -> 
+	    Lru.put lru k v;
+	    `Ok
 
-      | `Get k -> (
-	match Lru.get lru k with
-	  | `Found v -> `Value v
-	  | `NotFound -> `NotFound
-      )
+        | `Get k -> (
+	    match Lru.get lru k with
+	      | `Found v -> `Value v
+	      | `NotFound -> `NotFound
+          )
 
-      | `Remove k ->
-	Lru.remove lru k
+        | `Remove k ->
+	    Lru.remove lru k
 
-      | `Mem k -> 
-	Lru.mem lru k
+        | `Mem k -> 
+	    Lru.mem lru k
 
-      | `Clear -> 
-	Lru.clear lru;
-	`Ok
+        | `Clear -> 
+	    Lru.clear lru;
+	    `Ok
 
-      | `GetEntries ->
-	`Entries (Lru.entries lru)
+        | `GetEntries ->
+	    `Entries (Lru.entries lru)
 
-      | `GetStats ->
-	`Stats (stats_of_lru_stats (Lru.stats lru))
+        | `GetStats ->
+	    `Stats (stats_of_lru_stats (Lru.stats lru))
 
-      | `Ping -> 
-        `Ok
+        | `Ping -> 
+            `Ok
 
-      | _ -> `Bad
+        | _ -> `Bad
+
+    with _ ->
+      `Bad 
   in
   let response_s = Kache_types.string_of_t response in
   Message.send sock (Message.frame response_s)
